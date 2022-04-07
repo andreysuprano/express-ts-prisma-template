@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Empresa {
+  id              Int            @id @default(autoincrement())
+  email           String
+  nome            String
+  cnpj            Int
+  telefone        Int
+  endereco        String
+  regiao          String
+  responsavel     String
+  espaco          String
+  dataDeCadastro  DateTime       @default(now())
+  situacao        Boolean
+  valor           Float
+  representanteId Int
+  tipo            Int
+  urlAssinatura   String
+  ofertas         Oferta[]
+  redesSociais    RedesSociais[]
+  usuarios        Usuario[]
+  representante   Representante  @relation(fields: [representanteId], references: [id])
+}
+
+model Oferta {
+  id            Int      @id @default(autoincrement())
+  empresaId     Int
+  descricao     String
+  nomeDoProduto String
+  valorInicial  Float
+  valorOfertado Float
+  bannerUrl     String
+  dataCriacao   DateTime @default(now())
+  dataValidade  DateTime
+  empresa       Empresa  @relation(fields: [empresaId], references: [id])
+}
+
+model Usuario {
+  id        Int     @id @default(autoincrement())
+  empresaId Int
+  username  String
+  senha     String
+  regra     Int
+  Empresa   Empresa @relation(fields: [empresaId], references: [id])
+}
+
+model Anuncio {
+  id        Int    @id @default(autoincrement())
+  empresaId Int
+  titulo    String
+  descricao String
+  bannerUrl String
+}
+
+model RedesSociais {
+  id        Int     @id @default(autoincrement())
+  empresaId Int
+  rede      String
+  link      String
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+}
+
+model Representante {
+  id        Int       @id @default(autoincrement())
+  nome      Int
+  telefone  Int
+  email     String
+  chavePix  String
+  beneficio String
+  regiao    String
+  empresas  Empresa[]
+}
+
